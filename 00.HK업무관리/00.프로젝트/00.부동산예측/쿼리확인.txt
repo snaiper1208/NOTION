@@ -1,0 +1,102 @@
+def query_select(param, condition):
+
+	query = """
+		select
+			deal_id
+			, deal_nm
+			, deal_type_cd
+			, fn_conv_cd_id_to_obj('dscd_re_deal.deal_type_cd', deal_type_cd) ->> 'nm' as deal_type_nm
+			, deal_stat_cd
+			, fn_conv_cd_id_to_obj('dscd_re_deal.deal_sts_cd', deal_stat_cd) ->> 'nm' as deal_stat_nm
+			, deal_desc
+			, case
+			when now() between deal_apply_at_st and coalesce(deal_apply_at_en, now()) then false
+				else true
+			end as deal_apply_at_expired_fg
+			from dscd_re_deal t
+			where 1 = 1
+			{condition}
+	"""	
+
+	return query.format(condition = condition)
+
+def query_load(deal_id):
+	query = """
+		select
+			deal_id
+			, deal_nm
+			, deal_type_cd
+			, fn_conv_cd_id_to_obj('dscd_re_deal.deal_type_cd', deal_type_cd) ->> 'nm' as deal_type_nm
+			, deal_stat_cd
+			, fn_conv_cd_id_to_obj('dscd_re_deal.deal_sts_cd', deal_stat_cd) ->> 'nm' as deal_stat_nm
+			, deal_desc
+			, case
+			when now() between deal_apply_at_st and coalesce(deal_apply_at_en, now()) then false
+				else true
+			end as deal_apply_at_expired_fg
+		from dscd_re_deal t
+		where deal_id = '{deal_id}'
+		
+	"""
+
+	return query.format(usr_id = usr_id, deal_id = deal_id)
+
+
+def query_genId():
+	query = """
+		select concat( deal_id_prefix, lpad( ( substring( coalesce(deal_id, rpad(deal_id_prefix, deal_id_length, '0')), length(deal_id_prefix) + 1 ) :: numeric + 1 ) :: varchar, deal_id_length - length(deal_id_prefix), '0' ) ) as deal_id
+		from (
+			select to_char(now(), 'yyyy') as deal_id_prefix, 12 as deal_id_length, max(deal_id) as deal_id
+			from dscd_re_deal t
+			where usr_id like to_char(now(), 'yyyy') || '%'
+			and usr_id = '{usr_id}'
+		) z
+	"""
+
+	return query.format()
+
+def query_save(deal_id, usr_id, param, condition_update, condition_insert_param, condition_insert_value):
+
+	query = """
+		with upsert as
+		(
+			update dscd_re_deal set
+				def_mod_at = now()
+				, def_mod_usr_id = '{usr_id}'
+				, def_lst_at = now()
+				, def_lst_usr_id = '{usr_id}'
+				{condition_update}
+				where deal_id = '{deal_id}'
+				returning *
+			)
+			insert into dscd_re_deal
+			(
+				deal_id
+				, def_reg_at
+				, def_reg_usr_id
+				, def_lst_at
+				, def_lst_usr_id
+				{condition_insert_param}
+			)
+			select 
+				nullif('{deal_id}', '')
+				, now()
+				, '{usr_id}'
+				, now()
+				, '{usr_id}'
+				{condition_insert_value}
+			where not exists(select * from upsert)
+	"""
+	return query.format(deal_id = deal_id, usr_id = usr_id, param = param, condition_update = condition_update, condition_insert_param = condition_insert_param, condition_insert_value = condition_insert_value)
+
+def query_delete(deal_id, usr_id):
+	query = """
+		update dscd_re_deal set
+			def_del_at = now()
+			, def_del_usr_id = '{usr_id}'
+			, def_lst_at = now()
+			, def_lst_usr_id = '{usr_id}'
+		where deal_id = '{deal_id}'
+	"""
+
+	return query.format(deal_id = deal_id, usr_id = usr_id)
