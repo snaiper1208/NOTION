@@ -1,0 +1,39 @@
+Create a 2×2 portrait collage based on the uploaded person.
+
+​
+
+The same person must appear consistently across all four portraits — identical facial features, pose, and expression — but each represents a distinct era of Korean fashion and hairstyle.
+
+​
+
+Use photorealistic studio portrait lighting and a unified soft neutral background for all four.
+
+1️⃣ Top-left: “Modern Korea (2020s)” — Contemporary Korean style: natural makeup, minimal urban fashion, soft daylight tone.
+
+​
+
+2️⃣ Top-right: “1980s Korea” — Retro hairstyle (perm or voluminous), colorful knit or shoulder-padded outfit, warm film tone.
+
+​
+
+3️⃣ Bottom-left: “1960s Korea” — Classic black-and-white studio portrait, neat hairstyle, formal outfit, slightly grainy vintage tone.
+
+​
+
+4️⃣ Bottom-right: “1900s Korea” — Early modern or late Joseon look, hanbok or early 20th-century attire, sepia tone, old photo texture.
+
+Arrange the four portraits neatly in a 2×2 grid, equal spacing, consistent framing, and same light direction.
+
+​
+
+In the bottom-right corner of each image, add a small clean white text label showing the era:
+
+​
+
+“2020s”, “1980s”, “1960s”, “1900s”.
+
+Overall style: cinematic yet natural studio portrait, smooth background, balanced composition.
+
+Add a small centered caption at the bottom:
+
+“Korean Portraits Through Time.”
